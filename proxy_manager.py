@@ -1,5 +1,7 @@
 from scapy.all import *
 import subprocess
+from scapy.layers.dns import DNS
+from scapy.layers.inet import *
 
 
 class ProxyManager(object):
@@ -22,8 +24,8 @@ class ProxyManager(object):
         subprocess.call('sudo dnsproxy -c {}'.format(self._configuration_file_path), shell=True)
 
     def redirect_dns_query(self, pkt):
-        ip = pkt['IP']
-        udp = pkt['UDP']
-        dns = pkt['DNS']
-        udp.dest = str(1025)
+        ip = pkt[IP]
+        udp = pkt[UDP]
+        dns = pkt[DNS]
+        udp.dst = str(1025)
         send(ip/udp/dns)
